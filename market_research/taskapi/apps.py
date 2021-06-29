@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class TilesTasksConfig(AppConfig):
+class TaskapiConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'tiles_tasks'
+    name = 'market_research.taskapi'
