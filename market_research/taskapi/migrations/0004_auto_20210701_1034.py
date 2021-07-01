@@ -6,19 +6,19 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('taskapi', '0003_alter_task_title'),
+        ("taskapi", "0003_alter_task_title"),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='task',
-            name='description',
-            field=models.TextField(default='', max_length=1000),
+            model_name="task",
+            name="description",
+            field=models.TextField(default="", max_length=1000),
             preserve_default=False,
         ),
         migrations.AddField(
-            model_name='task',
-            name='order',
+            model_name="task",
+            name="order",
             field=models.IntegerField(default=0),
             preserve_default=False,
         ),
