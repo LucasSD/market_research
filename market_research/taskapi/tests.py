@@ -1,8 +1,11 @@
-from django.test import TestCase
+from django.test import Client, TestCase
+from django.urls import reverse
+from rest_framework import status
 
-from .models import Tile, Task
+from .models import Task, Tile
+from .serializers import TileSerializer
 
-
+client = Client()
 class TaskTest(TestCase):
     @classmethod
     def setUpTestData(cls):
@@ -51,3 +54,25 @@ class TileTest(TestCase):
     def test_obj_name(self):  # test __str__
         expected_obj_name = f"{self.test_tile.title} -- ID: {self.test_tile.id}"
         self.assertEqual(expected_obj_name, str(self.test_tile))
+
+class GetAllTilesTest(TestCase):
+    @classmethod
+    def setUpTestDate(cls):
+        Tile.objects.create(
+        title='Tile A', status=3, launch_date='23/12/2026')
+        Tile.objects.create(
+        title='Tile B', status=1, launch_date='05/11/2026')
+        Tile.objects.create(
+        title='Tile C', status=2)
+        Tile.objects.create(
+        title='Tile D', status=1)
+
+    def test_get_all_tiles(self):
+        # get API response
+        response = client.get(reverse('tiles'))
+        # get data from db
+        tiles = Tile.objects.all()
+        serializer = TileSerializer(tiles, many=True)
+        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
