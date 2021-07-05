@@ -69,7 +69,7 @@ class GetAllTilesTest(TestCase):
 
     def test_get_all_tiles(self):
         # get API response
-        response = client.get(reverse('tiles'))
+        response = self.client.get(reverse('tiles'))
         # get data from db
         tiles = Tile.objects.all()
         serializer = TileSerializer(tiles, many=True)
