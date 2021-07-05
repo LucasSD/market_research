@@ -12,7 +12,15 @@ class Tile(models.Model):
   ]
 
     status = models.PositiveSmallIntegerField(choices=STATUS)
-    launch_date = DateField()
+
+    # nullable, as might not know launch date
+    launch_date = DateField(null=True)
+
+    # need some qualitative identifier for tiles
+    title = models.CharField(max_length=100)
+
+    def __str__(self):
+        return f"{self.title} -- ID: {self.id}"
 
 
 class Task(models.Model):
@@ -26,6 +34,17 @@ class Task(models.Model):
 
     title = models.CharField(max_length=100)
     description = models.TextField(max_length=1000)
-    order = models.SmallIntegerField()
-    type = models.PositiveSmallIntegerField(choices=TYPES, null=True)
+
+    # nullable, as might not know order
+    order = models.SmallIntegerField(null=True)
+
+    type = models.PositiveSmallIntegerField(choices=TYPES)
+
+    # nullable, as might not know which tile
     tile = models.ForeignKey(Tile, on_delete=models.CASCADE, null=True)
+
+    class Meta:
+      order_with_respect_to = 'tile'
+
+    def __str__(self):
+        return f"{self.title} -- {self.type} -- from Tile: {self.tile.title}"
