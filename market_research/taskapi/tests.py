@@ -96,7 +96,6 @@ class GetSingleTileTest(APITestCase):
     def test_get_valid_single_tile(self):
         response = client.get(
             reverse('tile-detail', kwargs={'pk': self.tileA.pk}))
-        print(dir(response))
         request = response.wsgi_request
         tile = Tile.objects.get(pk=self.tileA.pk)
 
@@ -201,4 +200,182 @@ class DeleteSingleTileTest(APITestCase):
             reverse('tile-detail', kwargs={'pk': 30}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(Tile.objects.count(), 2)
+
+
+class GetAllTasksTest(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        test_tile = Tile.objects.create(
+        title='Tile A', status=3, launch_date='2026-12-23')
+
+        Task.objects.create(
+        title='Task A', type=3, description='description for Task A', order=3, tile=test_tile)
+        Task.objects.create(
+        title='Task B', type=2, description='description for Task B', order=4, tile=test_tile)
+        Task.objects.create(
+        title='Task C', type=3, description='description for Task C')
+        Task.objects.create(
+        title='Task D', type=1, description='description for Task D', tile=test_tile)
+
+    def test_get_all_tasks(self):
+        # use default viewset name
+        response = self.client.get(reverse('task-list'))
+        # get data from db
+        tasks = Task.objects.all()
+        request = response.wsgi_request
+
+        # context must include request due to HyperlinkedIdentityField
+        serializer = TaskSerializer(tasks, many=True, context={'request': request})
+        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+class GetSingleTaskTest(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        test_tile = Tile.objects.create(
+        title='Tile A', status=3, launch_date='2026-12-23')
+
+        cls.taskA = Task.objects.create(
+        title='Task A', type=3, description='description for Task A', order=3, tile=test_tile)
+        cls.taskB = Task.objects.create(
+        title='Task B', type=2, description='description for Task B', order=4, tile=test_tile)
+        cls.taskC = Task.objects.create(
+        title='Task C', type=3, description='description for Task C')
+        cls.taskD = Task.objects.create(
+        title='Task D', type=1, description='description for Task D', tile=test_tile)
+
+    def test_get_valid_single_task(self):
+        response = client.get(
+            reverse('task-detail', kwargs={'pk': self.taskA.pk}))
+        request = response.wsgi_request
+        task = Task.objects.get(pk=self.taskA.pk)
+
+        # context must include request due to HyperlinkedIdentityField
+        serializer = TaskSerializer(task, context={'request': request})
+        self.assertEqual(response.data, serializer.data)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_get_invalid_single_task(self):
+        response = client.get(
+            reverse('task-detail', kwargs={'pk': 30}))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+class CreateNewTaskTest(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+
+        test_tile = Tile.objects.create(
+        title='Tile A', status=3, launch_date='2026-12-23')
+
+        cls.valid_payload = {
+            'title': 'Task A',
+            "description": "new descrition for Task A",
+            "order": 1,
+            'type': 1,
+            "tile": test_tile,
+        }
+
+        cls.invalid_payload = {
+            'title': 'Task B',
+            "description": "",
+            "order": 1,
+            'type': 1,
+            "tile": test_tile,
+        }
+
+    def test_create_valid_task(self):
+        self.assertEqual(Task.objects.count(), 0)
+        response = client.post(
+            reverse('task-list'),
+            data=json.dumps(self.valid_payload),
+            content_type='application/json'
+        )
+        self.assertEqual(Task.objects.count(), 1)
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_create_invalid_task(self):
+        self.assertEqual(Task.objects.count(), 0)
+        response = client.post(
+            reverse('task-list'), 
+            data=json.dumps(self.invalid_payload),
+            content_type='application/json' # check application/json
+        )
+        self.assertEqual(Task.objects.count(), 0)
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+class UpdateSingleTaskTest(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+
+        test_tile = Tile.objects.create(
+        title='Tile A', status=3, launch_date='2026-12-23')
+
+        cls.taskC = Task.objects.create(
+        title='Task C', type=3, description='description for Task C')
+        cls.taskD = Task.objects.create(
+        title='Task D', type=1, description='description for Task D', tile=test_tile)
+
+        cls.valid_payload = {
+            'title': 'Task A',
+            "description": "new descrition for Task A",
+            "order": 1,
+            'type': 1,
+            "tile": test_tile,
+        }
+
+        cls.invalid_payload = {
+            'title': 'Task B',
+            "description": "",
+            "order": 1,
+            'type': 1,
+            "tile": test_tile,
+        }
+
+    def test_valid_update_task(self):
+        self.assertEqual(Task.objects.count(), 2)
+        response = client.put(
+            reverse('task-detail', kwargs={'pk': self.taskC.pk}),
+            data=json.dumps(self.valid_payload),
+            content_type='application/json' # check application/json
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK) # 204 here?
+        self.assertEqual(Task.objects.count(), 2)
+
+    def test_invalid_update_task(self):
+        self.assertEqual(Task.objects.count(), 2)
+        response = client.put(
+            reverse('task-detail', kwargs={'pk': self.taskD.pk}),
+            data=json.dumps(self.invalid_payload),
+            content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(Task.objects.count(), 2)
+
+class DeleteSingleTaskTest(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        test_tile = Tile.objects.create(
+        title='Tile A', status=3, launch_date='2026-12-23')
+
+        cls.taskC = Task.objects.create(
+        title='Task C', type=3, description='description for Task C')
+        cls.taskD = Task.objects.create(
+        title='Task D', type=1, description='description for Task D', tile=test_tile)
+
+    def test_valid_delete_task(self):
+        self.assertEqual(Task.objects.count(), 2)
+        response = client.delete(
+            reverse('task-detail', kwargs={'pk': self.taskC.pk}))
+        self.assertFalse(self.taskC)
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Task.objects.count(), 1)
+
+    def test_invalid_delete_task(self):
+        self.assertEqual(Task.objects.count(), 2)
+        response = client.delete(
+            reverse('task-detail', kwargs={'pk': 30}))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(Task.objects.count(), 2)
+        self.assertTrue(self.taskC)
+        self.assertTrue(self.taskD)
+
 
