@@ -8,7 +8,7 @@ from .models import Tile, Task
 class LegalDocAdmin(admin.ModelAdmin):
     """Encapsulate all admin options and functionality for Tile model."""
 
-    list_display = ("launch_date", "status")
+    list_display = ("id", "launch_date", "status")
     list_filter = ("launch_date", "status")
 
 

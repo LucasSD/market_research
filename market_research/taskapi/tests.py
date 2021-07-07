@@ -74,7 +74,10 @@ class GetAllTilesTest(APITestCase):
         response = self.client.get(reverse('tile-list'))
         # get data from db
         tiles = Tile.objects.all()
-        serializer = TileSerializer(tiles, many=True)
+        request = response.wsgi_request
+
+        # context must include request due to HyperlinkedIdentityField
+        serializer = TileSerializer(tiles, many=True, context={'request': request})
         self.assertEqual(response.data, serializer.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
@@ -93,8 +96,12 @@ class GetSingleTileTest(APITestCase):
     def test_get_valid_single_tile(self):
         response = client.get(
             reverse('tile-detail', kwargs={'pk': self.tileA.pk}))
+        print(dir(response))
+        request = response.wsgi_request
         tile = Tile.objects.get(pk=self.tileA.pk)
-        serializer = TileSerializer(tile)
+
+        # context must include request due to HyperlinkedIdentityField
+        serializer = TileSerializer(tile, context={'request': request})
         self.assertEqual(response.data, serializer.data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
