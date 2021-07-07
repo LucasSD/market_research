@@ -118,18 +118,58 @@ class CreateNewTileTest(APITestCase):
         }
 
     def test_create_valid_tile(self):
+        self.assertEqual(Tile.objects.count(), 0)
         response = client.post(
             reverse('tile-list'), # check tile-list
             data=json.dumps(self.valid_payload),
             content_type='application/json'
         )
+        self.assertEqual(Tile.objects.count(), 1)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
     def test_create_invalid_tile(self):
+        self.assertEqual(Tile.objects.count(), 0)
         response = client.post(
             reverse('tile-list'), 
             data=json.dumps(self.invalid_payload),
             content_type='application/json' # check application/json
         )
+        self.assertEqual(Tile.objects.count(), 0)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+
+class UpdateSingleTileTest(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.tileA = Tile.objects.create(
+            title='TileA', status=3)
+        cls.tileB = Tile.objects.create(
+            title='TileB', status=2)
+        cls.valid_payload = {
+            'title': 'updated-TileA',
+            'status': 2,
+            'launch_date': '2025-01-01',
+        }
+        cls.invalid_payload = {
+            'title': 'invalid-update',
+            'status': 4,
+        }
+
+    def test_valid_update_tile(self):
+        self.assertEqual(Tile.objects.count(), 2)
+        response = client.put(
+            reverse('tile-detail', kwargs={'pk': self.tileA.pk}),
+            data=json.dumps(self.valid_payload),
+            content_type='application/json' # check application/json
+        )
+        self.assertEqual(response.status_code, status.HTTP_200_OK) # 204 here?
+        self.assertEqual(Tile.objects.count(), 2)
+
+    def test_invalid_update_tile(self):
+        self.assertEqual(Tile.objects.count(), 2)
+        response = client.put(
+            reverse('tile-detail', kwargs={'pk': self.tileB.pk}),
+            data=json.dumps(self.invalid_payload),
+            content_type='application/json')
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(Tile.objects.count(), 2)
 
