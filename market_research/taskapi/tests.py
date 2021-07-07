@@ -120,7 +120,7 @@ class CreateNewTileTest(APITestCase):
     def test_create_valid_tile(self):
         self.assertEqual(Tile.objects.count(), 0)
         response = client.post(
-            reverse('tile-list'), # check tile-list
+            reverse('tile-list'),
             data=json.dumps(self.valid_payload),
             content_type='application/json'
         )
@@ -171,5 +171,27 @@ class UpdateSingleTileTest(APITestCase):
             data=json.dumps(self.invalid_payload),
             content_type='application/json')
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
+        self.assertEqual(Tile.objects.count(), 2)
+
+class DeleteSingleTileTest(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.tileA = Tile.objects.create(
+            title='Tile A', status=3, launch_date='2030-02-14')
+        cls.tileB = Tile.objects.create(
+            title='Tile B', status=1)
+
+    def test_valid_delete_tile(self):
+        self.assertEqual(Tile.objects.count(), 2)
+        response = client.delete(
+            reverse('tile-detail', kwargs={'pk': self.tileB.pk}))
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(Tile.objects.count(), 1)
+
+    def test_invalid_delete_tile(self):
+        self.assertEqual(Tile.objects.count(), 2)
+        response = client.delete(
+            reverse('tile-detail', kwargs={'pk': 30}))
+        self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(Tile.objects.count(), 2)
 
