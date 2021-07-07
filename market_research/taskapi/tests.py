@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
 from .models import Task, Tile
-from .serializers import TileSerializer
+from .serializers import TileSerializer, TaskSerializer
 
 client = APIClient()
 class TaskTest(APITestCase):
@@ -365,7 +365,6 @@ class DeleteSingleTaskTest(APITestCase):
         self.assertEqual(Task.objects.count(), 2)
         response = client.delete(
             reverse('task-detail', kwargs={'pk': self.taskC.pk}))
-        self.assertFalse(self.taskC)
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(Task.objects.count(), 1)
 
@@ -375,7 +374,6 @@ class DeleteSingleTaskTest(APITestCase):
             reverse('task-detail', kwargs={'pk': 30}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
         self.assertEqual(Task.objects.count(), 2)
-        self.assertTrue(self.taskC)
-        self.assertTrue(self.taskD)
+
 
 
