@@ -1,3 +1,5 @@
+import json
+
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
@@ -100,4 +102,34 @@ class GetSingleTileTest(APITestCase):
         response = client.get(
             reverse('tile-detail', kwargs={'pk': 30}))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
+
+class CreateNewTileTest(APITestCase):
+    @classmethod
+    def setUpTestData(cls):
+        cls.valid_payload = {
+            'title': 'Tile A',
+            'status': 1,
+            "launch_date": "2021-12-23",
+        }
+        cls.invalid_payload = {
+            'title': '',
+            'status': 2,
+            "launch_date": "2021-12-23",
+        }
+
+    def test_create_valid_tile(self):
+        response = client.post(
+            reverse('tile-list'), # check tile-list
+            data=json.dumps(self.valid_payload),
+            content_type='application/json'
+        )
+        self.assertEqual(response.status_code, status.HTTP_201_CREATED)
+
+    def test_create_invalid_tile(self):
+        response = client.post(
+            reverse('tile-list'), 
+            data=json.dumps(self.invalid_payload),
+            content_type='application/json' # check application/json
+        )
+        self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
 
