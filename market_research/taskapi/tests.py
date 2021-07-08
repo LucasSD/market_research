@@ -5,7 +5,7 @@ from rest_framework import status
 from rest_framework.test import APIClient, APITestCase
 
 from .models import Task, Tile
-from .serializers import TileSerializer, TaskSerializer
+from .serializers import TaskSerializer, TileSerializer
 
 client = APIClient()
 class TaskTest(APITestCase):
@@ -138,7 +138,7 @@ class CreateNewTileTest(APITestCase):
         response = client.post(
             reverse('tile-list'), 
             data=json.dumps(self.invalid_payload),
-            content_type='application/json' # check application/json
+            content_type='application/json' 
         )
         self.assertEqual(Tile.objects.count(), 0)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -165,7 +165,7 @@ class UpdateSingleTileTest(APITestCase):
         response = client.put(
             reverse('tile-detail', kwargs={'pk': self.tileA.pk}),
             data=json.dumps(self.valid_payload),
-            content_type='application/json' # check application/json
+            content_type='application/json' 
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK) # 204 here?
         self.assertEqual(Tile.objects.count(), 2)
@@ -218,9 +218,8 @@ class GetAllTasksTest(APITestCase):
         title='Task D', type=1, description='description for Task D', tile=test_tile)
 
     def test_get_all_tasks(self):
-        # use default viewset name
         response = self.client.get(reverse('task-list'))
-        # get data from db
+       
         tasks = Task.objects.all()
         request = response.wsgi_request
 
@@ -272,7 +271,7 @@ class CreateNewTaskTest(APITestCase):
             "description": "new descrition for Task A",
             "order": 1,
             'type': 1,
-            "tile": test_tile,
+            "tile": reverse("tile-detail", args=[str(test_tile.id)]),
         }
 
         cls.invalid_payload = {
@@ -280,7 +279,7 @@ class CreateNewTaskTest(APITestCase):
             "description": "",
             "order": 1,
             'type': 1,
-            "tile": test_tile,
+            "tile": reverse("tile-detail", args=[str(test_tile.id)]),
         }
 
     def test_create_valid_task(self):
@@ -298,7 +297,7 @@ class CreateNewTaskTest(APITestCase):
         response = client.post(
             reverse('task-list'), 
             data=json.dumps(self.invalid_payload),
-            content_type='application/json' # check application/json
+            content_type='application/json' 
         )
         self.assertEqual(Task.objects.count(), 0)
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
@@ -320,15 +319,15 @@ class UpdateSingleTaskTest(APITestCase):
             "description": "new descrition for Task A",
             "order": 1,
             'type': 1,
-            "tile": test_tile,
+            "tile": reverse("tile-detail", args=[str(test_tile.id)]),
         }
 
         cls.invalid_payload = {
             'title': 'Task B',
-            "description": "",
+            "description": "invalid payload",
             "order": 1,
             'type': 1,
-            "tile": test_tile,
+            "tile": "bad url"
         }
 
     def test_valid_update_task(self):
@@ -336,7 +335,7 @@ class UpdateSingleTaskTest(APITestCase):
         response = client.put(
             reverse('task-detail', kwargs={'pk': self.taskC.pk}),
             data=json.dumps(self.valid_payload),
-            content_type='application/json' # check application/json
+            content_type='application/json'
         )
         self.assertEqual(response.status_code, status.HTTP_200_OK) # 204 here?
         self.assertEqual(Task.objects.count(), 2)
