@@ -1,0 +1,6 @@
+coverage==5.5
+Django==2.2.24
+djangorestframework==3.10.0
+pip-autoremove==0.9.1
+pytz==2021.1
+sqlparse==0.4.1

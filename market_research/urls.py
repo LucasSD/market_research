@@ -20,4 +20,3 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include("market_research.taskapi.urls")),
 ]
-

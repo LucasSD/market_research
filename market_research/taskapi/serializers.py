@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from .models import Tile, Task
 
+
 class TileSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.HyperlinkedIdentityField(view_name="tile-detail")
     # owner = serializers.ReadOnlyField(source='owner.username')
@@ -9,7 +10,8 @@ class TileSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Tile
-        fields = ["id", 'title','status', 'launch_date']
+        fields = ["id", "title", "status", "launch_date"]
+
 
 class TaskSerializer(serializers.HyperlinkedModelSerializer):
     id = serializers.HyperlinkedIdentityField(view_name="task-detail")
@@ -19,4 +21,4 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Task
-        fields = ["id", 'title','description', 'order',"type", "tile"]
+        fields = ["id", "title", "description", "order", "type", "tile"]

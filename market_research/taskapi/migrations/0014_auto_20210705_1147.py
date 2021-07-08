@@ -6,12 +6,12 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('taskapi', '0013_auto_20210705_1135'),
+        ("taskapi", "0013_auto_20210705_1135"),
     ]
 
     operations = [
         migrations.AlterOrderWithRespectTo(
-            name='task',
-            order_with_respect_to='tile',
+            name="task",
+            order_with_respect_to="tile",
         ),
     ]
