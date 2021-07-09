@@ -35,12 +35,12 @@ class Task(models.Model):
     title = models.CharField(max_length=100)
     description = models.TextField(max_length=1000)
 
-    # nullable, as might not know order
+    # nullable, as might not know order on creation
     order = models.SmallIntegerField(null=True)
 
     type = models.PositiveSmallIntegerField(choices=TYPES)
 
-    # nullable, as might not know which tile
+    # nullable, as might not know which tile on creation
     tile = models.ForeignKey(
         Tile, related_name="tasks", on_delete=models.CASCADE, null=True
     )

@@ -20,7 +20,7 @@ class HomeTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_302_FOUND)
 
 
-class TaskTest(APITestCase):
+class TaskModelTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
         test_tile = Tile.objects.create(title="Some Tile", status=1)
@@ -49,7 +49,7 @@ class TaskTest(APITestCase):
         self.assertEqual(expected_obj_name, str(self.test_task))
 
 
-class TileTest(APITestCase):
+class TileModelTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
         cls.test_tile = Tile.objects.create(title="Some Tile", status=1)
@@ -87,9 +87,9 @@ class GetAllTilesTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_all_tiles(self):
-        # use default viewset name
+     
         response = self.client.get(reverse("tile-list"))
-        # get data from db
+        
         tiles = Tile.objects.all()
         request = response.wsgi_request
 
@@ -217,7 +217,10 @@ class DeleteSingleTileTest(APITestCase):
         self.assertEqual(Tile.objects.count(), 2)
         response = client.delete(reverse("tile-detail", kwargs={"pk": self.tileB.pk}))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(Tile.objects.count(), 1)
+        try:
+            Tile.objects.get(id=self.tileB.pk)
+        except:
+            self.assertEqual(Tile.objects.count(), 1)
 
     def test_invalid_delete_tile(self):
         self.assertEqual(Tile.objects.count(), 2)
@@ -440,7 +443,10 @@ class DeleteSingleTaskTest(APITestCase):
         self.assertEqual(Task.objects.count(), 2)
         response = client.delete(reverse("task-detail", kwargs={"pk": self.taskC.pk}))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(Task.objects.count(), 1)
+        try:
+            Task.objects.get(id=self.taskC.pk)
+        except:
+            self.assertEqual(Task.objects.count(), 1)
 
     def test_invalid_delete_task(self):
         self.assertEqual(Task.objects.count(), 2)
