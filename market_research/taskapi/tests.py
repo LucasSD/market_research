@@ -73,6 +73,7 @@ class TileModelTest(APITestCase):
 class GetAllTilesTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
+        # use different field combinations
         Tile.objects.create(title="Tile A", status=3, launch_date="2026-12-23")
         Tile.objects.create(title="Tile B", status=1, launch_date="2026-11-05")
         Tile.objects.create(title="Tile C", status=2)
@@ -87,9 +88,9 @@ class GetAllTilesTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_all_tiles(self):
-     
+
         response = self.client.get(reverse("tile-list"))
-        
+
         tiles = Tile.objects.all()
         request = response.wsgi_request
 
@@ -102,6 +103,7 @@ class GetAllTilesTest(APITestCase):
 class GetSingleTileTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
+        # use different field combinations
         cls.tileA = Tile.objects.create(
             title="Tile A", status=3, launch_date="2026-12-23"
         )
@@ -142,6 +144,8 @@ class CreateNewTileTest(APITestCase):
             "status": 1,
             "launch_date": "2021-12-23",
         }
+
+        # empty title field
         cls.invalid_payload = {
             "title": "",
             "status": 2,
@@ -179,9 +183,12 @@ class UpdateSingleTileTest(APITestCase):
             "status": 2,
             "launch_date": "2025-01-01",
         }
+
+        # invalid status field
         cls.invalid_payload = {
             "title": "invalid-update",
             "status": 4,
+            "launch_date": "2025-01-01",
         }
 
     def test_valid_update_tile(self):
@@ -191,7 +198,7 @@ class UpdateSingleTileTest(APITestCase):
             data=json.dumps(self.valid_payload),
             content_type="application/json",
         )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)  # 204 here?
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Tile.objects.count(), 2)
 
     def test_invalid_update_tile(self):
@@ -208,6 +215,7 @@ class UpdateSingleTileTest(APITestCase):
 class DeleteSingleTileTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
+        # different field combinations
         cls.tileA = Tile.objects.create(
             title="Tile A", status=3, launch_date="2030-02-14"
         )
@@ -217,10 +225,10 @@ class DeleteSingleTileTest(APITestCase):
         self.assertEqual(Tile.objects.count(), 2)
         response = client.delete(reverse("tile-detail", kwargs={"pk": self.tileB.pk}))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        try:
-            Tile.objects.get(id=self.tileB.pk)
-        except:
-            self.assertEqual(Tile.objects.count(), 1)
+
+        # check removed from db
+        self.assertEqual(Tile.objects.filter(id=self.tileB.pk).count(), 0)
+        self.assertEqual(Tile.objects.count(), 1)
 
     def test_invalid_delete_tile(self):
         self.assertEqual(Tile.objects.count(), 2)
@@ -236,6 +244,7 @@ class GetAllTasksTest(APITestCase):
             title="Tile A", status=3, launch_date="2026-12-23"
         )
 
+        # different field combinations
         Task.objects.create(
             title="Task A",
             type=3,
@@ -283,7 +292,7 @@ class GetSingleTaskTest(APITestCase):
         test_tile = Tile.objects.create(
             title="Tile A", status=3, launch_date="2026-12-23"
         )
-
+        # different field combinations
         cls.taskA = Task.objects.create(
             title="Task A",
             type=3,
@@ -344,6 +353,7 @@ class CreateNewTaskTest(APITestCase):
             "tile": reverse("tile-detail", args=[str(test_tile.id)]),
         }
 
+        # empty description
         cls.invalid_payload = {
             "title": "Task B",
             "description": "",
@@ -396,6 +406,7 @@ class UpdateSingleTaskTest(APITestCase):
             "tile": reverse("tile-detail", args=[str(test_tile.id)]),
         }
 
+        # invalid tile field
         cls.invalid_payload = {
             "title": "Task B",
             "description": "invalid payload",
@@ -411,7 +422,7 @@ class UpdateSingleTaskTest(APITestCase):
             data=json.dumps(self.valid_payload),
             content_type="application/json",
         )
-        self.assertEqual(response.status_code, status.HTTP_200_OK)  # 204 here?
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(Task.objects.count(), 2)
 
     def test_invalid_update_task(self):
@@ -443,10 +454,10 @@ class DeleteSingleTaskTest(APITestCase):
         self.assertEqual(Task.objects.count(), 2)
         response = client.delete(reverse("task-detail", kwargs={"pk": self.taskC.pk}))
         self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)
-        try:
-            Task.objects.get(id=self.taskC.pk)
-        except:
-            self.assertEqual(Task.objects.count(), 1)
+
+        # check removed from db
+        self.assertEqual(Task.objects.filter(id=self.taskC.pk).count(), 0)
+        self.assertEqual(Task.objects.count(), 1)
 
     def test_invalid_delete_task(self):
         self.assertEqual(Task.objects.count(), 2)

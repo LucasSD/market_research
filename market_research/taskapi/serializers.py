@@ -7,6 +7,7 @@ class TileSerializer(serializers.HyperlinkedModelSerializer):
 
     id = serializers.HyperlinkedIdentityField(view_name="tile-detail")
 
+    # one click to RUD functionality for tasks
     tasks = serializers.HyperlinkedRelatedField(
         many=True, read_only=True, view_name="task-detail"
     )
@@ -22,6 +23,8 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Task
         fields = ["id", "title", "description", "order", "type", "tile"]
+
+        # order must be unique within a Tile
         validators = [
             UniqueTogetherValidator(
                 queryset=Task.objects.all(), fields=["order", "tile"]

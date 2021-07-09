@@ -46,7 +46,7 @@ class Task(models.Model):
     )
 
     class Meta:
-        order_with_respect_to = "tile"
+        ordering = ["tile"]
 
     def __str__(self):
         """
