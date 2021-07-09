@@ -1,4 +1,4 @@
-![]()
+![](api-cover.png)
 # Introduction
 
 The aim of this project is to create a simple API using Django Rest Framework which allows interaction between two Django models. I have used HyperlinkedModelSerializer classes and ModelViewSets
@@ -47,6 +47,25 @@ run `python manage.py createsuperuser` and follow the instructions.
 
 Still being developed. 
 ###### To do:
+
+- add permissions/logins
+
+- add stricter tests for updating object fields
+
+- use Django mixers for tests or try Factory Boy and Faker packages
+
+- add gettext_lazy wherever required for future translations
+
+- add help_text where useful
+
+- add constraint check so that it's not possible to save invalid choices in the Django shell
+
+- consider changing tasks HyperlinkedRelatedField serializer in the TileSerializer to a basic string serializer, which would show better information about the tasks in the Tile, but at the cost of not having a hyper-link to more easily navigate to said tasks
+
+- add better messages for all endpoints
+
+- produce more detailed documentation using Swagger or another package
+
 
 
 
