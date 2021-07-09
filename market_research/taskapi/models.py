@@ -12,8 +12,8 @@ class Tile(models.Model):
     # nullable, as might not know launch date
     launch_date = DateField(null=True)
 
-    # need some qualitative identifier for tiles
-    title = models.CharField(max_length=100)
+    # need some qualitative unique identifier for tiles
+    title = models.CharField(max_length=100, unique=True)
 
     def __str__(self):
         return f"{self.title} -- ID: {self.id}"
