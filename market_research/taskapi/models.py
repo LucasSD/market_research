@@ -37,7 +37,9 @@ class Task(models.Model):
     type = models.PositiveSmallIntegerField(choices=TYPES)
 
     # nullable, as might not know which tile
-    tile = models.ForeignKey(Tile, related_name = "tasks", on_delete=models.CASCADE, null=True)
+    tile = models.ForeignKey(
+        Tile, related_name="tasks", on_delete=models.CASCADE, null=True
+    )
 
     class Meta:
         order_with_respect_to = "tile"

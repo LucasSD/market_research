@@ -294,7 +294,7 @@ class CreateNewTaskTest(APITestCase):
         cls.valid_payload = {
             "title": "Task A",
             "description": "new descrition for Task A",
-            "order": 1,
+            "order": 2,
             "type": 1,
             "tile": reverse("tile-detail", args=[str(test_tile.id)]),
         }
