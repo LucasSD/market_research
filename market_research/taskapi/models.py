@@ -5,6 +5,9 @@ from django.db.models.fields import DateField
 class Tile(models.Model):
     """Create a Tile model."""
 
+    # need some qualitative unique identifier for tiles
+    title = models.CharField(max_length=100, unique=True)
+
     STATUS = [(1, "Live"), (2, "Pending"), (3, "Archived")]
 
     status = models.PositiveSmallIntegerField(choices=STATUS)
@@ -12,10 +15,11 @@ class Tile(models.Model):
     # nullable, as might not know launch date
     launch_date = DateField(null=True)
 
-    # need some qualitative unique identifier for tiles
-    title = models.CharField(max_length=100, unique=True)
-
     def __str__(self):
+        """
+        Returns:
+            string: title and ID of Tile.
+        """
         return f"{self.title} -- ID: {self.id}"
 
 
@@ -45,4 +49,8 @@ class Task(models.Model):
         order_with_respect_to = "tile"
 
     def __str__(self):
+        """
+        Returns:
+            string: Task title, Task type and Tile title
+        """
         return f"{self.title} -- {self.type} -- from Tile: {self.tile.title}"

@@ -4,14 +4,12 @@ from rest_framework.validators import UniqueTogetherValidator
 
 
 class TileSerializer(serializers.HyperlinkedModelSerializer):
+
     id = serializers.HyperlinkedIdentityField(view_name="tile-detail")
 
     tasks = serializers.HyperlinkedRelatedField(
         many=True, read_only=True, view_name="task-detail"
     )
-    # owner = serializers.ReadOnlyField(source='owner.username')
-    # or
-    # tasks = SimpleTaskSerializer(many=True, read_only=True)
 
     class Meta:
         model = Tile

@@ -4,16 +4,16 @@ from .models import Tile, Task
 
 
 @admin.register(Tile)
-class LegalDocAdmin(admin.ModelAdmin):
+class TileAdmin(admin.ModelAdmin):
     """Encapsulate all admin options and functionality for Tile model."""
 
-    list_display = ("id", "launch_date", "status")
+    list_display = ("id", "title", "launch_date", "status")
     list_filter = ("launch_date", "status")
 
 
 @admin.register(Task)
-class TagAdmin(admin.ModelAdmin):
+class TaskAdmin(admin.ModelAdmin):
     """Encapsulate all admin options and functionality for Task model."""
 
-    list_display = ("description", "order", "type", "tile")
+    list_display = ("id", "title", "description", "order", "type", "tile")
     list_filter = ("type", "tile")
