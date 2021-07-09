@@ -10,6 +10,16 @@ from .serializers import TaskSerializer, TileSerializer
 client = APIClient()
 
 
+class HomeTest(APITestCase):
+    def test_api_url_exists_at_desired_location(self):
+        response = self.client.get("/api/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_home_redirect(self):
+        response = self.client.get("")
+        self.assertEqual(response.status_code, status.HTTP_302_FOUND)
+
+
 class TaskTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
@@ -68,6 +78,14 @@ class GetAllTilesTest(APITestCase):
         Tile.objects.create(title="Tile C", status=2)
         Tile.objects.create(title="Tile D", status=1)
 
+    def test_url_exists_at_desired_location(self):
+        response = self.client.get("/api/tiles/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_url_accessible_by_name(self):
+        response = self.client.get(reverse("tile-list"))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     def test_get_all_tiles(self):
         # use default viewset name
         response = self.client.get(reverse("tile-list"))
@@ -92,6 +110,14 @@ class GetSingleTileTest(APITestCase):
         )
         cls.tileC = Tile.objects.create(title="Tile C", status=2)
         cls.tileD = Tile.objects.create(title="Tile D", status=2)
+
+    def test_url_exists_at_desired_location(self):
+        response = self.client.get("/api/tiles/1/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_url_accessible_by_name(self):
+        response = self.client.get(reverse("tile-detail", kwargs={"pk": self.tileA.pk}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_valid_single_tile(self):
         response = client.get(reverse("tile-detail", kwargs={"pk": self.tileA.pk}))
@@ -228,6 +254,14 @@ class GetAllTasksTest(APITestCase):
             title="Task D", type=1, description="description for Task D", tile=test_tile
         )
 
+    def test_url_exists_at_desired_location(self):
+        response = self.client.get("/api/tasks/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_url_accessible_by_name(self):
+        response = self.client.get(reverse("task-list"))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     def test_get_all_tasks(self):
         response = self.client.get(reverse("task-list"))
 
@@ -267,6 +301,14 @@ class GetSingleTaskTest(APITestCase):
         cls.taskD = Task.objects.create(
             title="Task D", type=1, description="description for Task D", tile=test_tile
         )
+
+    def test_url_exists_at_desired_location(self):
+        response = self.client.get("/api/tasks/1/")
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    def test_url_accessible_by_name(self):
+        response = self.client.get(reverse("task-detail", kwargs={"pk": self.taskA.pk}))
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_valid_single_task(self):
         response = client.get(reverse("task-detail", kwargs={"pk": self.taskA.pk}))
