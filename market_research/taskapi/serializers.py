@@ -7,7 +7,7 @@ class TileSerializer(serializers.HyperlinkedModelSerializer):
 
     id = serializers.HyperlinkedIdentityField(view_name="tile-detail")
 
-    # one click to RUD functionality for tasks
+    # gives RUD functionality for tasks
     tasks = serializers.HyperlinkedRelatedField(
         many=True, read_only=True, view_name="task-detail"
     )

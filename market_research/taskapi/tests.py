@@ -97,7 +97,6 @@ class GetAllTilesTest(APITestCase):
         # context must include request due to HyperlinkedIdentityField
         serializer = TileSerializer(tiles, many=True, context={"request": request})
         self.assertEqual(response.data, serializer.data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
 class GetSingleTileTest(APITestCase):
@@ -129,7 +128,6 @@ class GetSingleTileTest(APITestCase):
         # context must include request due to HyperlinkedIdentityField
         serializer = TileSerializer(tile, context={"request": request})
         self.assertEqual(response.data, serializer.data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_invalid_single_tile(self):
         response = client.get(reverse("tile-detail", kwargs={"pk": 30}))
@@ -283,7 +281,6 @@ class GetAllTasksTest(APITestCase):
         # context must include request due to HyperlinkedIdentityField
         serializer = TaskSerializer(tasks, many=True, context={"request": request})
         self.assertEqual(response.data, serializer.data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
 
 class GetSingleTaskTest(APITestCase):
@@ -330,7 +327,6 @@ class GetSingleTaskTest(APITestCase):
         # context must include request due to HyperlinkedIdentityField
         serializer = TaskSerializer(task, context={"request": request})
         self.assertEqual(response.data, serializer.data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
 
     def test_get_invalid_single_task(self):
         response = client.get(reverse("task-detail", kwargs={"pk": 30}))
