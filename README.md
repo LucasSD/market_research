@@ -60,8 +60,6 @@ Still being developed.
 
 - add constraint check so that it's not possible to save invalid choices in the Django shell
 
-- consider changing tasks HyperlinkedRelatedField serializer in the TileSerializer to a basic string serializer, which would show better information about the tasks in the Tile, but at the cost of not having a hyper-link to more easily navigate to said tasks
-
 - add better messages for all endpoints
 
 - produce more detailed documentation using Swagger or another package
