@@ -2,7 +2,7 @@
 # Introduction
 
 The aim of this project is to create a simple API using Django Rest Framework which allows interaction between two Django models. I have used HyperlinkedModelSerializer classes and ModelViewSets
-to make the API as RESTful as possible, while allowing for full CRUD functionality with the simplest possible code. 
+to make the API as RESTful as possible, while allowing for full CRUD functionality with the simplest code possible. 
 
 ## Technologies
 
