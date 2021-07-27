@@ -38,7 +38,7 @@ Please follow the instructions below to run this application.
 ## https://docs.djangoproject.com/en/3.2/ref/django-admin/#django-admin-runserver
 ```python manage.py runserver```
 
-After these commands, you should be able to see the homepage at http://localhost:8000/.
+After these commands, you should be able to see the API root at http://localhost:8000/ via a redirection.  
 
 You will need to create a super user if you want to access the Django admin site (https://docs.djangoproject.com/en/3.2/ref/contrib/admin/): to do this, 
 run `python manage.py createsuperuser` and follow the instructions.
