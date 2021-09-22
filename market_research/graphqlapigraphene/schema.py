@@ -7,6 +7,7 @@ class TileType(DjangoObjectType):
     class Meta:
         model = Tile
         fields = ("title", "status", "launch_date")
+        convert_choices_to_enum = False
 
 
 class TaskType(DjangoObjectType):
