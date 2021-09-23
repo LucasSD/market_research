@@ -24,5 +24,5 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     path("", RedirectView.as_view(url="api/")),
     path("api/", include("market_research.taskapi.urls")),
-    path("graphql", GraphQLView.as_view(graphiql=True, schema=schema)),
+    path("graphql/", GraphQLView.as_view(graphiql=True, schema=schema)),
 ]

@@ -23,11 +23,9 @@ class Query(graphene.ObjectType):
     tasks = graphene.List(TaskType)
 
     def resolve_tiles(root, info, **kwargs):
-        # Querying a list
         return Tile.objects.all()
 
     def resolve_tasks(root, info, **kwargs):
-        # Querying a list
         return Task.objects.all()
 
 
