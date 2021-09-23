@@ -20,10 +20,15 @@ class TaskType(DjangoObjectType):
 
 class Query(graphene.ObjectType):
     tiles = graphene.List(TileType)
+    tile = graphene.Field(TileType, title=graphene.String())
+
     tasks = graphene.List(TaskType)
 
     def resolve_tiles(root, info, **kwargs):
         return Tile.objects.all()
+
+    def resolve_tile(self, info, title):
+        return Tile.objects.get(title=title)
 
     def resolve_tasks(root, info, **kwargs):
         return Task.objects.all()
