@@ -23,6 +23,7 @@ class Query(graphene.ObjectType):
     tile = graphene.Field(TileType, title=graphene.String())
 
     tasks = graphene.List(TaskType)
+    task = graphene.List(TaskType, title=graphene.String())
 
     def resolve_tiles(root, info, **kwargs):
         return Tile.objects.all()
@@ -32,6 +33,9 @@ class Query(graphene.ObjectType):
 
     def resolve_tasks(root, info, **kwargs):
         return Task.objects.all()
+
+    def resolve_task(self, info, title):
+        return Task.objects.filter(title=title)
 
 
 schema = graphene.Schema(query=Query)
