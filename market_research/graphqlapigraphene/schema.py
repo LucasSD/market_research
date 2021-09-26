@@ -38,4 +38,31 @@ class Query(graphene.ObjectType):
         return Task.objects.filter(title=title)
 
 
-schema = graphene.Schema(query=Query)
+class TileInput(graphene.InputObjectType):
+    title = graphene.String()
+    status = graphene.Int()
+    launchDate = graphene.Date()
+
+
+class CreateTile(graphene.Mutation):
+    class Arguments:
+        input = TileInput(required=True)
+
+    tile = graphene.Field(TileType)
+
+    @classmethod
+    def mutate(cls, root, info, input):
+        tile = Tile()
+        tile.title = input.title
+        tile.status = input.status
+        tile.launchDate = graphene.Date(input.launchDate)
+
+        tile.save()
+        return CreateTile(tile=tile)
+
+
+class Mutation(graphene.ObjectType):
+    create_tile = CreateTile.Field()
+
+
+schema = graphene.Schema(query=Query, mutation=Mutation)

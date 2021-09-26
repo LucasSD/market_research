@@ -5,6 +5,7 @@ from mixer.backend.django import mixer
 from market_research.graphqlapigraphene.schema import schema
 from market_research.taskapi.models import Tile, Task
 
+
 class GetTilesTest(GraphQLTestCase):
     GRAPHQL_SCHEMA = schema
 
@@ -15,7 +16,7 @@ class GetTilesTest(GraphQLTestCase):
 
     def test_get_all_tiles(self):
         response = self.query(
-        '''
+            '''
         query {
             tiles {
                 title
@@ -51,6 +52,30 @@ class GetTilesTest(GraphQLTestCase):
         assert content['data']['tile']["launchDate"]
 
 
+class CreateTileTest(GraphQLTestCase):
+    GRAPHQL_SCHEMA = schema
+
+    def test_create_tile(self):
+        before = Tile.objects.count()
+        response = self.query(
+            '''
+                mutation createTile($input: TileInput!) {
+                    createTile(input: $input) {
+                        tile {
+                            title
+                            status
+                            launchDate}
+                        }
+            }
+            ''',
+            op_name='createTile',
+            input_data={'title': 'random_title', 'status': 1, 'launchDate': "2021-12-25"},
+        )
+        after = Tile.objects.count()
+        self.assertResponseNoErrors(response)
+        assert before + 1 == after
+
+
 class GetTasksTest(GraphQLTestCase):
     GRAPHQL_SCHEMA = schema
 
@@ -61,7 +86,7 @@ class GetTasksTest(GraphQLTestCase):
 
     def test_get_all_tasks(self):
         response = self.query(
-        '''
+            '''
         query {
             tasks {
                 title
@@ -108,5 +133,3 @@ class GetTasksTest(GraphQLTestCase):
         assert content['data']['task'][0]["description"]
         assert content['data']['task'][0]["order"]
         assert content['data']['task'][0]["tile"]
-
-
