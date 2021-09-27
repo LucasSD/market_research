@@ -15,5 +15,5 @@ class TileAdmin(admin.ModelAdmin):
 class TaskAdmin(admin.ModelAdmin):
     """Encapsulate all admin options and functionality for Task model."""
 
-    list_display = ("id", "title", "description", "order", "type", "tile")
-    list_filter = ("type", "tile")
+    list_display = ("id", "title", "description", "order", "kind", "tile")
+    list_filter = ("kind", "tile")

@@ -26,7 +26,7 @@ class Tile(models.Model):
 class Task(models.Model):
     """Create a Task model."""
 
-    TYPES = [
+    KINDS = [
         (1, "Survey"),
         (2, "Discussion"),
         (3, "Diary"),
@@ -38,7 +38,7 @@ class Task(models.Model):
     # nullable, as might not know order on creation
     order = models.SmallIntegerField(null=True)
 
-    type = models.PositiveSmallIntegerField(choices=TYPES)
+    kind = models.PositiveSmallIntegerField(choices=KINDS)
 
     # nullable, as might not know which tile on creation
     tile = models.ForeignKey(
@@ -51,6 +51,6 @@ class Task(models.Model):
     def __str__(self):
         """
         Returns:
-            string: Task title, Task type and Tile title
+            string: Task title, Task kind and Tile title
         """
-        return f"{self.title} -- {self.type} -- from Tile: {self.tile.title}"
+        return f"{self.title} -- {self.kind} -- from Tile: {self.tile.title}"
