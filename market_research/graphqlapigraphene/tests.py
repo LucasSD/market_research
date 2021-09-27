@@ -6,6 +6,7 @@ from market_research.graphqlapigraphene.schema import schema
 from market_research.taskapi.models import Tile, Task
 
 
+
 class GetTilesTest(GraphQLTestCase):
     GRAPHQL_SCHEMA = schema
 
@@ -56,7 +57,7 @@ class CreateTileTest(GraphQLTestCase):
     GRAPHQL_SCHEMA = schema
 
     def test_create_tile(self):
-        before = Tile.objects.count()
+        num_tiles_before = Tile.objects.count()
         response = self.query(
             '''
                 mutation createTile($input: TileInput!) {
@@ -71,9 +72,9 @@ class CreateTileTest(GraphQLTestCase):
             op_name='createTile',
             input_data={'title': 'random_title', 'status': 1, 'launchDate': "2021-12-25"},
         )
-        after = Tile.objects.count()
+        num_tiles_after = Tile.objects.count()
         self.assertResponseNoErrors(response)
-        assert before + 1 == after
+        assert num_tiles_before + 1 == num_tiles_after
 
 
 class GetTasksTest(GraphQLTestCase):
@@ -114,6 +115,7 @@ class GetTasksTest(GraphQLTestCase):
                         title
                         description
                         order
+                        kind
                         tile {
                             title
                             status
@@ -132,4 +134,32 @@ class GetTasksTest(GraphQLTestCase):
         assert content['data']['task'][0]["title"] == "random_title"
         assert content['data']['task'][0]["description"]
         assert content['data']['task'][0]["order"]
+        assert content['data']['task'][0]["kind"]
         assert content['data']['task'][0]["tile"]
+
+
+
+class CreateTaskTest(GraphQLTestCase):
+    GRAPHQL_SCHEMA = schema
+
+    def test_create_task(self):
+        num_tasks_before = Task.objects.count()
+        response = self.query(
+            '''
+                mutation createTask($input: TaskInput!) {
+                    createTask(input: $input) {
+                        task {
+                            title
+                            description
+                            order
+                            kind
+                            }
+                        }
+            }
+            ''',
+            op_name='createTask',
+            input_data={'title': 'random_title', 'description': 'a test task', 'order': 9, 'kind': 1},
+        )
+        num_tasks_after = Task.objects.count()
+        self.assertResponseNoErrors(response)
+        assert num_tasks_before + 1 == num_tasks_after

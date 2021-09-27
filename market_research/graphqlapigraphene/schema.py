@@ -15,7 +15,8 @@ class TaskType(DjangoObjectType):
         model = Task
 
         # type field removed as it causes an error
-        fields = ("title", "description", "order", "tile")
+        fields = ("title", "description", "order", "kind", "tile",)
+        convert_choices_to_enum = False
 
 
 class Query(graphene.ObjectType):
@@ -61,8 +62,34 @@ class CreateTile(graphene.Mutation):
         return CreateTile(tile=tile)
 
 
+class TaskInput(graphene.InputObjectType):
+    title = graphene.String()
+    description = graphene.String()
+    order = graphene.Int()
+    kind = graphene.Int()
+
+
+class CreateTask(graphene.Mutation):
+    class Arguments:
+        input = TaskInput(required=True)
+
+    task = graphene.Field(TaskType)
+
+    @classmethod
+    def mutate(cls, root, info, input):
+        task = Task()
+        task.title = input.title
+        task.description = input.description
+        task.order = input.order
+        task.kind = input.kind
+
+        task.save()
+        return CreateTask(task=task)
+
+
 class Mutation(graphene.ObjectType):
     create_tile = CreateTile.Field()
+    create_task = CreateTask.Field()
 
 
 schema = graphene.Schema(query=Query, mutation=Mutation)
