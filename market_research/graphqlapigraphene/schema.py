@@ -14,8 +14,13 @@ class TaskType(DjangoObjectType):
     class Meta:
         model = Task
 
-        # type field removed as it causes an error
-        fields = ("title", "description", "order", "kind", "tile",)
+        fields = (
+            "title",
+            "description",
+            "order",
+            "kind",
+            "tile",
+        )
         convert_choices_to_enum = False
 
 

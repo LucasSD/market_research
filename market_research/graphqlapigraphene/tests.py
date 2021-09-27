@@ -6,7 +6,6 @@ from market_research.graphqlapigraphene.schema import schema
 from market_research.taskapi.models import Tile, Task
 
 
-
 class GetTilesTest(GraphQLTestCase):
     GRAPHQL_SCHEMA = schema
 
@@ -17,7 +16,7 @@ class GetTilesTest(GraphQLTestCase):
 
     def test_get_all_tiles(self):
         response = self.query(
-            '''
+            """
         query {
             tiles {
                 title
@@ -25,16 +24,16 @@ class GetTilesTest(GraphQLTestCase):
                 launchDate
             }
         }
-        ''',
+        """,
         )
 
         content = json.loads(response.content)
         self.assertResponseNoErrors(response)
-        assert len(content['data']['tiles']) == 2
+        assert len(content["data"]["tiles"]) == 2
 
     def test_get_one_tile(self):
         response = self.query(
-            '''
+            """
                 query($title: String!){
                     tile(title: $title) {
                         title
@@ -42,15 +41,15 @@ class GetTilesTest(GraphQLTestCase):
                         launchDate
                     }
             }
-            ''',
-            variables={'title': "random_title"},
+            """,
+            variables={"title": "random_title"},
         )
 
         content = json.loads(response.content)
         self.assertResponseNoErrors(response)
-        assert content['data']['tile']["title"] == "random_title"
-        assert content['data']['tile']["status"]
-        assert content['data']['tile']["launchDate"]
+        assert content["data"]["tile"]["title"] == "random_title"
+        assert content["data"]["tile"]["status"]
+        assert content["data"]["tile"]["launchDate"]
 
 
 class CreateTileTest(GraphQLTestCase):
@@ -59,7 +58,7 @@ class CreateTileTest(GraphQLTestCase):
     def test_create_tile(self):
         num_tiles_before = Tile.objects.count()
         response = self.query(
-            '''
+            """
                 mutation createTile($input: TileInput!) {
                     createTile(input: $input) {
                         tile {
@@ -68,9 +67,13 @@ class CreateTileTest(GraphQLTestCase):
                             launchDate}
                         }
             }
-            ''',
-            op_name='createTile',
-            input_data={'title': 'random_title', 'status': 1, 'launchDate': "2021-12-25"},
+            """,
+            op_name="createTile",
+            input_data={
+                "title": "random_title",
+                "status": 1,
+                "launchDate": "2021-12-25",
+            },
         )
         num_tiles_after = Tile.objects.count()
         self.assertResponseNoErrors(response)
@@ -87,7 +90,7 @@ class GetTasksTest(GraphQLTestCase):
 
     def test_get_all_tasks(self):
         response = self.query(
-            '''
+            """
         query {
             tasks {
                 title
@@ -100,16 +103,16 @@ class GetTasksTest(GraphQLTestCase):
                     }
             }
         }
-        ''',
+        """,
         )
 
         content = json.loads(response.content)
         self.assertResponseNoErrors(response)
-        assert len(content['data']['tasks']) == 2
+        assert len(content["data"]["tasks"]) == 2
 
     def test_get_one_task(self):
         response = self.query(
-            '''
+            """
                 query($title: String!){
                     task(title: $title) {
                         title
@@ -123,20 +126,19 @@ class GetTasksTest(GraphQLTestCase):
                     }
                     }
             }
-            ''',
-            variables={'title': "random_title"},
+            """,
+            variables={"title": "random_title"},
         )
 
         content = json.loads(response.content)
         self.assertResponseNoErrors(response)
 
         # task query is a list since task titles are not unique
-        assert content['data']['task'][0]["title"] == "random_title"
-        assert content['data']['task'][0]["description"]
-        assert content['data']['task'][0]["order"]
-        assert content['data']['task'][0]["kind"]
-        assert content['data']['task'][0]["tile"]
-
+        assert content["data"]["task"][0]["title"] == "random_title"
+        assert content["data"]["task"][0]["description"]
+        assert content["data"]["task"][0]["order"]
+        assert content["data"]["task"][0]["kind"]
+        assert content["data"]["task"][0]["tile"]
 
 
 class CreateTaskTest(GraphQLTestCase):
@@ -145,7 +147,7 @@ class CreateTaskTest(GraphQLTestCase):
     def test_create_task(self):
         num_tasks_before = Task.objects.count()
         response = self.query(
-            '''
+            """
                 mutation createTask($input: TaskInput!) {
                     createTask(input: $input) {
                         task {
@@ -156,9 +158,14 @@ class CreateTaskTest(GraphQLTestCase):
                             }
                         }
             }
-            ''',
-            op_name='createTask',
-            input_data={'title': 'random_title', 'description': 'a test task', 'order': 9, 'kind': 1},
+            """,
+            op_name="createTask",
+            input_data={
+                "title": "random_title",
+                "description": "a test task",
+                "order": 9,
+                "kind": 1,
+            },
         )
         num_tasks_after = Task.objects.count()
         self.assertResponseNoErrors(response)
