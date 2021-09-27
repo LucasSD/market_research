@@ -22,7 +22,7 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Task
-        fields = ["id", "title", "description", "order", "type", "tile"]
+        fields = ["id", "title", "description", "order", "kind", "tile"]
 
         # order must be unique within a Tile
         validators = [

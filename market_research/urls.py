@@ -17,8 +17,12 @@ from django.contrib import admin
 from django.urls import include, path
 from django.views.generic import RedirectView
 
+from graphene_django.views import GraphQLView
+from market_research.graphqlapigraphene.schema import schema
+
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("", RedirectView.as_view(url="api/")),
     path("api/", include("market_research.taskapi.urls")),
+    path("graphql/", GraphQLView.as_view(graphiql=True, schema=schema)),
 ]

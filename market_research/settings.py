@@ -38,6 +38,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "market_research.taskapi",
     "rest_framework",
+    "market_research.graphqlapi",
+    "market_research.graphqlapigraphene",
+    "graphene_django",
 ]
 
 MIDDLEWARE = [

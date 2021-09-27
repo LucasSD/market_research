@@ -24,9 +24,9 @@ class TaskModelTest(APITestCase):
     @classmethod
     def setUpTestData(cls):
         test_tile = Tile.objects.create(title="Some Tile", status=1)
-        cls.test_task = Task.objects.create(title="This Task", type=1, tile=test_tile)
+        cls.test_task = Task.objects.create(title="This Task", kind=1, tile=test_tile)
 
-        cls.test_task_null_fields = Task.objects.create(title="This Task", type=1)
+        cls.test_task_null_fields = Task.objects.create(title="This Task", kind=1)
 
     def test_title_max_length(self):
         max_length = self.test_task._meta.get_field("title").max_length
@@ -36,8 +36,8 @@ class TaskModelTest(APITestCase):
         max_length = self.test_task._meta.get_field("description").max_length
         self.assertEqual(max_length, 1000)
 
-    def test_type_choices(self):
-        choices = self.test_task._meta.get_field("type").choices
+    def test_kind_choices(self):
+        choices = self.test_task._meta.get_field("kind").choices
         self.assertEqual(choices, [(1, "Survey"), (2, "Discussion"), (3, "Diary")])
 
     def test_null_fields(self):
@@ -45,7 +45,7 @@ class TaskModelTest(APITestCase):
         self.assertEqual(self.test_task_null_fields.order, None)
 
     def test_obj_name(self):  # test __str__
-        expected_obj_name = f"{self.test_task.title} -- {self.test_task.type} -- from Tile: {self.test_task.tile.title}"
+        expected_obj_name = f"{self.test_task.title} -- {self.test_task.kind} -- from Tile: {self.test_task.tile.title}"
         self.assertEqual(expected_obj_name, str(self.test_task))
 
 
@@ -245,23 +245,23 @@ class GetAllTasksTest(APITestCase):
         # different field combinations
         Task.objects.create(
             title="Task A",
-            type=3,
+            kind=3,
             description="description for Task A",
             order=3,
             tile=test_tile,
         )
         Task.objects.create(
             title="Task B",
-            type=2,
+            kind=2,
             description="description for Task B",
             order=4,
             tile=test_tile,
         )
         Task.objects.create(
-            title="Task C", type=3, description="description for Task C"
+            title="Task C", kind=3, description="description for Task C"
         )
         Task.objects.create(
-            title="Task D", type=1, description="description for Task D", tile=test_tile
+            title="Task D", kind=1, description="description for Task D", tile=test_tile
         )
 
     def test_url_exists_at_desired_location(self):
@@ -292,23 +292,23 @@ class GetSingleTaskTest(APITestCase):
         # different field combinations
         cls.taskA = Task.objects.create(
             title="Task A",
-            type=3,
+            kind=3,
             description="description for Task A",
             order=3,
             tile=test_tile,
         )
         cls.taskB = Task.objects.create(
             title="Task B",
-            type=2,
+            kind=2,
             description="description for Task B",
             order=4,
             tile=test_tile,
         )
         cls.taskC = Task.objects.create(
-            title="Task C", type=3, description="description for Task C"
+            title="Task C", kind=3, description="description for Task C"
         )
         cls.taskD = Task.objects.create(
-            title="Task D", type=1, description="description for Task D", tile=test_tile
+            title="Task D", kind=1, description="description for Task D", tile=test_tile
         )
 
     def test_url_exists_at_desired_location(self):
@@ -345,7 +345,7 @@ class CreateNewTaskTest(APITestCase):
             "title": "Task A",
             "description": "new descrition for Task A",
             "order": 2,
-            "type": 1,
+            "kind": 1,
             "tile": reverse("tile-detail", args=[str(test_tile.id)]),
         }
 
@@ -354,7 +354,7 @@ class CreateNewTaskTest(APITestCase):
             "title": "Task B",
             "description": "",
             "order": 1,
-            "type": 1,
+            "kind": 1,
             "tile": reverse("tile-detail", args=[str(test_tile.id)]),
         }
 
@@ -388,17 +388,17 @@ class UpdateSingleTaskTest(APITestCase):
         )
 
         cls.taskC = Task.objects.create(
-            title="Task C", type=3, description="description for Task C"
+            title="Task C", kind=3, description="description for Task C"
         )
         cls.taskD = Task.objects.create(
-            title="Task D", type=1, description="description for Task D", tile=test_tile
+            title="Task D", kind=1, description="description for Task D", tile=test_tile
         )
 
         cls.valid_payload = {
             "title": "Task A",
             "description": "new descrition for Task A",
             "order": 1,
-            "type": 1,
+            "kind": 1,
             "tile": reverse("tile-detail", args=[str(test_tile.id)]),
         }
 
@@ -407,7 +407,7 @@ class UpdateSingleTaskTest(APITestCase):
             "title": "Task B",
             "description": "invalid payload",
             "order": 1,
-            "type": 1,
+            "kind": 1,
             "tile": "bad url",
         }
 
@@ -440,10 +440,10 @@ class DeleteSingleTaskTest(APITestCase):
         )
 
         cls.taskC = Task.objects.create(
-            title="Task C", type=3, description="description for Task C"
+            title="Task C", kind=3, description="description for Task C"
         )
         cls.taskD = Task.objects.create(
-            title="Task D", type=1, description="description for Task D", tile=test_tile
+            title="Task D", kind=1, description="description for Task D", tile=test_tile
         )
 
     def test_valid_delete_task(self):
