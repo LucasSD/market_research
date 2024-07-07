@@ -45,7 +45,7 @@ run `python manage.py createsuperuser` and follow the instructions.
 
 ## Project Status
 
-Still being developed. 
+On hold. 
 ###### To do:
 
 - add permissions/logins
